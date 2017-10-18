@@ -48,7 +48,7 @@ session.add(sportsplayer4)
 session.commit()
 
 sportsplayer5 = SportsPlayer(name="CHOU Tien Chen", description="Chou Tien-chen is a male badminton player from Taiwan, representing Chinese Taipei."
-       " He became the first local shuttler after 17 years in 2016 to win the Chinese Taipei Open GP men’s singles title since Indonesian-born Fung Permadi won it in ",
+       "He won his first BWF Super Series title at the 2014 Yonex French Open, beating Wang Zhengming of China 10-21, 25-23, 21-19 in the finals.",
                      rank="5", country="Chinese Taepei", sports=sports1)
 
 session.add(sportsplayer5)
@@ -69,7 +69,7 @@ session.add(sportsplayer7)
 session.commit()
 
 sportsplayer8 = SportsPlayer(name="KIDAMBI Srikanth", description="Srikanth Kidambi is an Indian badminton player. He shot to prominence by defeating Olympic Champion"
-       " Lin Dan in 2014 China Open Super Series Premier by 21–19 21–17 in the final round, thus becoming the first Indian to win a Super Series Premier Men's title.",
+       "Winning the Malaysian Open in 2017 marked Lin's success in having won every major title in the badminton world.",
                      rank="8", country="India", sports=sports1)
 
 session.add(sportsplayer8)
@@ -124,7 +124,7 @@ sportsplayer5 = SportsPlayer(name="Kramnik, Vladimir", description="Vladimir Bor
 session.add(sportsplayer5)
 session.commit()
 
-sportsplayer6 = SportsPlayer(name="Anand, Viswanathan", description="Viswanathan "Vishy" Anand is an Indian chess grandmaster and a former World "
+sportsplayer6 = SportsPlayer(name="Anand, Viswanathan", description="Viswanathan 'Vishy' Anand is an Indian chess grandmaster and a former World "
        "Chess Champion. Anand became India's first grandmaster in 1988. He held the FIDE World Chess Championship from 2000 to 2002.",
                      rank="9", country="India", sports=sports2)
 
@@ -166,7 +166,7 @@ session.add(sportsplayer4)
 session.commit()
 
 sportsplayer5 = SportsPlayer(name="BOLL Timo", description="Timo Boll is a German professional table tennis player who currently plays with "
-       "Borussia Düsseldorf and is ranked second in the German Table Tennis National League.",
+       "Borussia Dusseldorf and is ranked second in the German Table Tennis National League.",
                      rank="5", country="Germany", sports=sports3)
 
 session.add(sportsplayer5)
