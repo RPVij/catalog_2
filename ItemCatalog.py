@@ -21,7 +21,7 @@ def showSports():
     return render_template('sports.html', sports=sports)
 
 
-# Show a sports detail
+# Show a sports detail with players
 @app.route('/sports/<int:sports_id>/')
 def showSportsDetail(sports_id):
     sports = session.query(Sports).filter_by(id=sports_id).one()
@@ -32,7 +32,6 @@ def showSportsDetail(sports_id):
 
 
 #JSON DATA
-
 @app.route('/sports/JSON')
 def sportsJSON():
     sports = session.query(Sports).all()
@@ -95,8 +94,7 @@ def deleteSports(sports_id):
 
 
 
-# Create a new menu item
-
+# adding a new Sports Player
 
 @app.route(
     '/sports/<int:sports_id>/player/new/', methods=['GET', 'POST'])
@@ -112,11 +110,11 @@ def newPlayer(sports_id):
         return render_template('newplayer.html', sports_id=sports_id)
 
     return render_template('newPlayer.html', sports=sports)
-    # return 'This page is for making a new menu item for sports 
+    # return 'This page is for adding a new playerfor sports 
     # %sports_id
 
-# Edit a menu item
 
+# Edit the sports player
 
 @app.route('/sports/<int:sports_id>/player/<int:player_id>/edit',
            methods=['GET', 'POST'])
@@ -139,9 +137,9 @@ def editPlayer(sports_id, player_id):
         return render_template(
             'editPlayer.html', sports_id=sports_id, player_id=player_id, player=editedPlayer)
 
-    # return 'This page is for editing menu item %s' % menu_id
+    # return 'This page is for editing the sports player %s' % player_id
 
-# Delete a menu item
+# Delete the sports player
 
 
 @app.route('/sports/<int:sports_id>/player/<int:player_id>/delete',
@@ -154,7 +152,7 @@ def deletePlayer(sports_id, player_id):
         return redirect(url_for('showSportsDetail', sports_id=sports_id))
     else:
         return render_template('deletePlayer.html', player=deletedPlayer)
-    # return "This page is for deleting menu item %s" % menu_id
+    # return "This page is for deleting sports player %s' % player_id
 
 
 if __name__ == '__main__':
