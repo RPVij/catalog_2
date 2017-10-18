@@ -25,9 +25,9 @@ def showSports():
 @app.route('/sports/<int:sports_id>/')
 def showSportsDetail(sports_id):
     sports = session.query(Sports).filter_by(id=sports_id).one()
-    items = session.query(SportsPlayer).filter_by(
+    players = session.query(SportsPlayer).filter_by(
         sports_id=sports_id).all()
-    return render_template('player.html', items=items, sports=sports)
+    return render_template('player.html', players=players, sports=sports)
 
 
 
@@ -77,92 +77,84 @@ def editSports(sports_id):
 
     # return 'This page will be for editing sports %s' % sports_id
 
+# Delete a sports
+@app.route('/sports/<int:sports_id>/delete/', methods=['GET', 'POST'])
+def deleteSports(sports_id):
+    sportsToDelete = session.query(
+        Sports).filter_by(id=sports_id).one()
+    if request.method == 'POST':
+        session.delete(sportsToDelete)
+        session.commit()
+        return redirect(
+            url_for('showSports', sports_id=sports_id))
+    else:
+        return render_template(
+            'deleteSports.html', sports=sportsToDelete)
+    # return 'This page will be for deleting sports %s' % sports_id
 
 
 
 
+# Create a new menu item
 
 
-# # Delete a sports
+@app.route(
+    '/sports/<int:sports_id>/player/new/', methods=['GET', 'POST'])
+def newPlayer(sports_id):
+    if request.method == 'POST':
+        newP = SportsPlayer(name=request.form['name'], description=request.form[
+                           'description'], rank=request.form['rank'], country=request.form['country'], sports_id=sports_id)
+        session.add(newP)
+        session.commit()
+
+        return redirect(url_for('showSports', sports_id=sports_id))
+    else:
+        return render_template('newplayer.html', sports_id=sports_id)
+
+    return render_template('newPlayer.html', sports=sports)
+    # return 'This page is for making a new menu item for sports 
+    # %sports_id
+
+# Edit a menu item
 
 
-# @app.route('/sports/<int:sports_id>/delete/', methods=['GET', 'POST'])
-# def deleteSports(sports_id):
-#     sportsToDelete = session.query(
-#         Sports).filter_by(id=sports_id).one()
-#     if request.method == 'POST':
-#         session.delete(sportsToDelete)
-#         session.commit()
-#         return redirect(
-#             url_for('showSports', sports_id=sports_id))
-#     else:
-#         return render_template(
-#             'deleteSports.html', sports=sportsToDelete)
-#     # return 'This page will be for deleting sports %s' % sports_id
+@app.route('/sports/<int:sports_id>/player/<int:player_id>/edit',
+           methods=['GET', 'POST'])
+def editPlayer(sports_id, player_id):
+    editedPlayer = session.query(SportsPlayer).filter_by(id=player_id).one()
+    if request.method == 'POST':
+        if request.form['name']:
+            editedPlayer.name = request.form['name']
+        if request.form['description']:
+            editedPlayer.description = request.form['name']
+        if request.form['rank']:
+            editedPlayer.rank = request.form['rank']
+        if request.form['country']:
+            editedPlayer.country = request.form['country']
+        session.add(editedPlayer)
+        session.commit()
+        return redirect(url_for('showSportsDetail', sports_id=sports_id))
+    else:
+
+        return render_template(
+            'editPlayer.html', sports_id=sports_id, player_id=player_id, player=editedPlayer)
+
+    # return 'This page is for editing menu item %s' % menu_id
+
+# Delete a menu item
 
 
-
-
-# # Create a new menu item
-
-
-# @app.route(
-#     '/sports/<int:sports_id>/menu/new/', methods=['GET', 'POST'])
-# def newMenuItem(sports_id):
-#     if request.method == 'POST':
-#         newItem = MenuItem(name=request.form['name'], description=request.form[
-#                            'description'], rank=request.form['rank'], country=request.form['country'], sports_id=sports_id)
-#         session.add(newItem)
-#         session.commit()
-
-#         return redirect(url_for('showMenu', sports_id=sports_id))
-#     else:
-#         return render_template('newmenuitem.html', sports_id=sports_id)
-
-#     return render_template('newMenuItem.html', sports=sports)
-#     # return 'This page is for making a new menu item for sports %s'
-#     # %sports_id
-
-# # Edit a menu item
-
-
-# @app.route('/sports/<int:sports_id>/menu/<int:menu_id>/edit',
-#            methods=['GET', 'POST'])
-# def editMenuItem(sports_id, menu_id):
-#     editedItem = session.query(MenuItem).filter_by(id=menu_id).one()
-#     if request.method == 'POST':
-#         if request.form['name']:
-#             editedItem.name = request.form['name']
-#         if request.form['description']:
-#             editedItem.description = request.form['name']
-#         if request.form['rank']:
-#             editedItem.rank = request.form['rank']
-#         if request.form['country']:
-#             editedItem.country = request.form['country']
-#         session.add(editedItem)
-#         session.commit()
-#         return redirect(url_for('showMenu', sports_id=sports_id))
-#     else:
-
-#         return render_template(
-#             'editmenuitem.html', sports_id=sports_id, menu_id=menu_id, item=editedItem)
-
-#     # return 'This page is for editing menu item %s' % menu_id
-
-# # Delete a menu item
-
-
-# @app.route('/sports/<int:sports_id>/menu/<int:menu_id>/delete',
-#            methods=['GET', 'POST'])
-# def deleteMenuItem(sports_id, menu_id):
-#     itemToDelete = session.query(MenuItem).filter_by(id=menu_id).one()
-#     if request.method == 'POST':
-#         session.delete(itemToDelete)
-#         session.commit()
-#         return redirect(url_for('showMenu', sports_id=sports_id))
-#     else:
-#         return render_template('deleteMenuItem.html', item=itemToDelete)
-#     # return "This page is for deleting menu item %s" % menu_id
+@app.route('/sports/<int:sports_id>/player/<int:player_id>/delete',
+           methods=['GET', 'POST'])
+def deletePlayer(sports_id, player_id):
+    deletedPlayer = session.query(SportsPlayer).filter_by(id=player_id).one()
+    if request.method == 'POST':
+        session.delete(deletedPlayer)
+        session.commit()
+        return redirect(url_for('showSportsDetail', sports_id=sports_id))
+    else:
+        return render_template('deletePlayer.html', player=deletedPlayer)
+    # return "This page is for deleting menu item %s" % menu_id
 
 
 if __name__ == '__main__':

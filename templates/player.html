@@ -7,6 +7,50 @@
 		<div class = 'pane'>
 		<h1>{{ sports.name }}</h1>
 		
+		{% with messages = get_flashed_messages() %}
+      {% if messages %}
+          
+        <ul>
+        {% for message in messages %}
+            <li> <strong> {{ message }} </strong> </li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    {% endwith %}
+
+    {% if players !=[] %}
+
+		<a href = "{{url_for('newPlayer', sports_id = sports.id )}}">Add a new Player</a>
+	</br></br>	
+
+	<h2>Players</h2>
+
+		{% for i in players %}
+
+		<p>{{i.name}}</p>
+	
+
+		<p>{{i.description}}</p>
+	
+
+		<p>{{i.rank}}</p>
+
+		<p>{{i.country}}</p>
+
+		<a href="{{url_for('editPlayer', sports_id = sports.id, player_id=i.id) }}">Edit</a>
+	</br>
+	<a href="{{url_for('deletePlayer', sports_id = sports.id, player_id=i.id) }}">Delete</a>
+</br>
+</br>
+
+		{% endfor %}
+		
+		
+
+		{% else %}
+		<p> You currently have no menu players. </p>
+		<a href = "{{url_for('newPlayer', sports_id = sports.id )}}">Create New Item</a>
+			{% endif %}
 </div>
 	</body>
 
