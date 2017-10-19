@@ -6,25 +6,25 @@
 
 
 <body>
-<div class = 'pane'>
+<div class = 'heading'>
 <h1>Sports</h1>
+</div>
 
 <a href="{{url_for('newSports')}}" > <h3> Add a New Sports </h3> </a>
 
 {% for sport in sports %}
 
 
-
-<a href = "{{url_for('showSportsDetail', sports_id = sport.id)}}"> <p>{{sport.name}}</p></a>
+<div class="card" style="margin: 3px;">
+<a href = "{{url_for('showSportsDetail', sports_id = sport.id)}}"> <h2>{{sport.name}}</h2></a>
 
 <p><a href = "{{url_for('editSports',sports_id = sport.id)}}">Edit Sports</a></p>
 
 <p> <a href = "{{url_for('deleteSports',sports_id = sport.id)}}">Delete Sports</a> </p>
-
+</div>
 
 {% endfor %}
 
-</div>
 </body>
 
 </html>

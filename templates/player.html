@@ -4,8 +4,9 @@
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
 	</head>
 	<body>
-		<div class = 'pane'>
+		<div class = 'heading'>
 		<h1>{{ sports.name }}</h1>
+	</div>
 		
 		{% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -26,20 +27,29 @@
 	<h2>Players</h2>
 
 		{% for i in players %}
+		 <div class="row">
+		 	<div class="col s12 m6">
+		 		<div class="card">
+		 			<div class="card-title">
+				<h2>{{i.name}}</h2>
+			</div>
+			<p>{{i.rank}}</p>
 
-		<p>{{i.name}}</p>
+			<p>{{i.country}}</p>
+
+			<p>{{i.description}}</p>
+			<div class="card-action">
+				<a href="{{url_for('editPlayer', sports_id = sports.id, player_id=i.id) }}">Edit</a>
+				<a href="{{url_for('deletePlayer', sports_id = sports.id, player_id=i.id) }}">Delete</a>
+			</div>
+		</div>
+	</div>
+	</div>
 	
 
-		<p>{{i.description}}</p>
-	
+		
 
-		<p>{{i.rank}}</p>
-
-		<p>{{i.country}}</p>
-
-		<a href="{{url_for('editPlayer', sports_id = sports.id, player_id=i.id) }}">Edit</a>
-	</br>
-	<a href="{{url_for('deletePlayer', sports_id = sports.id, player_id=i.id) }}">Delete</a>
+		
 </br>
 </br>
 

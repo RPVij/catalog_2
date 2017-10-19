@@ -1,14 +1,17 @@
 body            { font-family: sans-serif; background-color: #333333;}
- h1, h2, h3, h4   { color: #CCCCCC; float: center;}
-h1, h2          { font-family: 'Georgia', serif; margin: 0; }
-h1              { border-bottom: 3px solid #eee; }
+ h1, h2, h3, h4   { color: #CCCCCC;}
+h1, h2          { font-family: 'Georgia', serif; }
+h1              { border: 3px solid #eee; text-align: center; width: 100%; font-size: 5.2em; padding: 2}
 h2              { font-size: 1.2em; }
 
 p               { color: #CCCCCC;}
 
-.heading { 
-	display: flex;
-	flex-direction: row;
+.card {
+	  border: 5px solid #bbb; /* Dotted border */
+    border-radius: 15px; /* Rounded border */
+    margin: 0 auto; /* Center the coupon */
+    max-width: 500px; 
+    padding: 8px;
 }
 
 a {text-decoration: none; color:#FFFFCC; font-size: .75em;}
