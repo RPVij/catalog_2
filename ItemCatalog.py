@@ -82,7 +82,7 @@ def newSports():
         session.commit()
         return redirect(url_for('showSports'))
     else:
-        return render_template('newSports.html')
+        return render_template('newSports.html',login_session=login_session)
         # return "This page will be for making a new sports"
 
 
@@ -102,7 +102,7 @@ def editSports(sports_id):
             return redirect(url_for('showSports'))
     else:
         return render_template(
-            'editSports.html', sports=editedSports)
+            'editSports.html', sports=editedSports,login_session=login_session)
 
     # return 'This page will be for editing sports %s' % sports_id
 
@@ -122,7 +122,7 @@ def deleteSports(sports_id):
             url_for('showSports', sports_id=sports_id))
     else:
         return render_template(
-            'deleteSports.html', sports=sportsToDelete)
+            'deleteSports.html', sports=sportsToDelete,login_session=login_session)
     # return 'This page will be for deleting sports %s' % sports_id
 
 
@@ -150,7 +150,7 @@ def newPlayer(sports_id):
     else:
         return render_template('newplayer.html', sports_id=sports_id)
 
-    return render_template('newPlayer.html', sports_id=sports_id)
+    return render_template('newPlayer.html', sports_id=sports_id,login_session=login_session)
     # return 'This page is for adding a new playerfor sports 
     # %sports_id
 
@@ -173,12 +173,12 @@ def editPlayer(sports_id, player_id):
             editedPlayer.country = request.form['country']
         session.add(editedPlayer)
         session.commit()
-        return redirect(url_for('showSportsDetail', sports_id=sports_id))
+        return redirect(url_for('showSportsDetail', sports_id=sports_id,login_session=login_session))
     else:
 
         return render_template(
             'editPlayer.html', sports_id=sports_id, player_id=player_id,
-            player=editedPlayer)
+            player=editedPlayer,login_session=login_session)
 
         # return 'This page is for editing the sports player %s' % player_id
 
@@ -193,9 +193,9 @@ def deletePlayer(sports_id, player_id):
     if request.method == 'POST':
         session.delete(deletedPlayer)
         session.commit()
-        return redirect(url_for('showSportsDetail', sports_id=sports_id))
+        return redirect(url_for('showSportsDetail', sports_id=sports_id),login_session=login_session)
     else:
-        return render_template('deletePlayer.html', player=deletedPlayer)
+        return render_template('deletePlayer.html', player=deletedPlayer,login_session=login_session)
         # return "This page is for deleting sports player %s' % player_id
 
 
