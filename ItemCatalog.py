@@ -136,8 +136,6 @@ def newPlayer(sports_id):
     sports = session.query(Sports).filter_by(id=sports_id).one()
     if 'username' not in login_session:
         return redirect('/login')
-        if 'username' not in login_session:
-            return redirect('/login')
     if login_session['user_id'] != sports.user_id:
         return "<script>function myFunction() {alert('You are not authorized to add player to this sports. Please create your own Sports in order to add Players.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
@@ -162,6 +160,10 @@ def newPlayer(sports_id):
            methods=['GET', 'POST'])
 def editPlayer(sports_id, player_id):
     editedPlayer = session.query(SportsPlayer).filter_by(id=player_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if login_session['user_id'] != editedPlayer.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to edit player to this sports. Please create your own Sports in order to edit Players.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         if request.form['name']:
             editedPlayer.name = request.form['name']
@@ -190,6 +192,10 @@ def editPlayer(sports_id, player_id):
            methods=['GET', 'POST'])
 def deletePlayer(sports_id, player_id):
     deletedPlayer = session.query(SportsPlayer).filter_by(id=player_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if login_session['user_id'] != deletedPlayer.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to delete player to this sports. ');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         session.delete(deletedPlayer)
         session.commit()
@@ -200,6 +206,8 @@ def deletePlayer(sports_id, player_id):
 
 
         # Auth views
+
+        #the below code snippet function is from
         # https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
 
 
@@ -332,7 +340,7 @@ def getUserID(email):
 
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
-
+ # he below code snippet function is from https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
 
 @app.route('/gdisconnect')
 def gdisconnect():

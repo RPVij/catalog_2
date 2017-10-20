@@ -6,7 +6,7 @@
         <div class="user-content">
           {% if login_session['username'] != null %}
             <span class="image"><img src="{{ login_session['picture'] }}"
-                                     class="img-circle"></span><span
+                                     height="42" width="42" class="img-circle"></span><span
               class="name">{{ login_session['username'] }}</span>
             <a href="{{ url_for('gdisconnect') }}"><span
                 class="session">logout</span></a>
