@@ -1,5 +1,5 @@
 # ItemCatalog
-Project 4 of Udacity FSND
+Project 4 of Udacity FSND a RESTful web application using the Python framework Flask along with implementing third-party OAuth authentication.
 
 ## Sports Catalog
 This project provides a list of Sports within a Players as well as provide a user registration and authentication system. Registered users will have the ability to post, edit and delete their own Players.
