@@ -1,31 +1,52 @@
 {% extends 'base.html' %}
 {% block content %}
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <h1>Sports</h1>
-      <hr>
-    </div>
-    <div class="col-md-12">
-      <a href="{{ url_for('newSports') }}"><h4> Add a New Sports </h4></a>
-
-      {% for sport in sports %}
-
-
-        <div class="card">
-          <a href="{{ url_for('showSportsDetail', sports_id = sport.id) }}">
-            <h3>{{ sport.name }}</h3></a>
-
-          <span><a href="{{ url_for('editSports',sports_id = sport.id) }}">Edit
-            Sports</a></span>
-
-          <span class="right"><a
-              href="{{ url_for('deleteSports',sports_id = sport.id) }}">Delete
-            Sports</a></span>
+  <!--------------------------------------------------------------------->
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="user-content">
+          {% if login_session['username'] != null %}
+            <span class="image"><img src="{{ login_session['picture'] }}"
+                                     class="img-circle"></span><span
+              class="name">{{ login_session['username'] }}</span>
+            <a href="{{ url_for('gdisconnect') }}"><span
+                class="session">logout</span></a>
+          {% else %}
+            <a href="{{ url_for('showLogin') }}"><span
+                class="session">login</span></a>
+          {% endif %}
+          <hr>
         </div>
-
-      {% endfor %}
+      </div>
     </div>
   </div>
-</div>
+  <!--------------------------------------------------------------------->
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>Sports</h1>
+        <hr>
+      </div>
+      <div class="col-md-12">
+        <a href="{{ url_for('newSports') }}"><h4> Add a New Sports </h4></a>
+
+        {% for sport in sports %}
+
+
+          <div class="card">
+            <a href="{{ url_for('showSportsDetail', sports_id = sport.id) }}">
+              <h3>{{ sport.name }}</h3></a>
+
+            <span><a href="{{ url_for('editSports',sports_id = sport.id) }}">Edit
+            Sports</a></span>
+
+            <span class="right"><a
+                href="{{ url_for('deleteSports',sports_id = sport.id) }}">Delete
+            Sports</a></span>
+          </div>
+
+        {% endfor %}
+      </div>
+    </div>
+  </div>
 {% endblock %}

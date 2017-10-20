@@ -1,7 +1,11 @@
-from flask import Flask, flash, render_template, request, redirect, jsonify, url_for
+from flask import Flask, flash, render_template, request, redirect, jsonify, \
+    url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 import random, string
+
+from urllib3.connectionpool import xrange
+
 from database_setup import Base, User, Sports, SportsPlayer
 from flask import make_response
 import requests
@@ -9,7 +13,6 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
 import httplib2
 import json
-
 
 from flask import session as login_session
 
@@ -31,9 +34,10 @@ session = DBSession()
 @app.route('/')
 @app.route('/sports/')
 def showSports():
+    print(login_session)
     sports = session.query(Sports).all()
     # return "This page will show all my sports"
-    return render_template('sports.html', sports=sports)
+    return render_template('sports.html', sports=sports, login_session=login_session)
 
 
 # Show a sports detail with players
@@ -42,25 +46,28 @@ def showSportsDetail(sports_id):
     sports = session.query(Sports).filter_by(id=sports_id).one()
     players = session.query(SportsPlayer).filter_by(
         sports_id=sports_id).all()
-    return render_template('player.html', players=players, sports=sports)
+    return render_template('player.html', players=players, sports=sports,
+                           login_session=login_session)
 
 
-
-#JSON DATA
+# JSON DATA
 @app.route('/sports/JSON')
 def sportsJSON():
     sports = session.query(Sports).all()
     return jsonify(sports=[s.serialize for s in sports])
+
 
 @app.route('/sports/<int:sports_id>/player/JSON')
 def sportsPlayerJSON(sports_id):
     Sports_Player = session.query(SportsPlayer).filter_by(id=sports_id).all()
     return jsonify(Sports_Player=[s.serialize for s in Sports_Player])
 
+
 @app.route('/sports/<int:sports_id>/player/<int:player_id>/JSON')
 def sportsPlayerIdJSON(sports_id, player_id):
     Sports_Player = session.query(SportsPlayer).filter_by(id=sports_id).one()
     return jsonify(Sports_Player=Sports_Player.serialize)
+
 
 # Create a new sports
 @app.route('/sports/new/', methods=['GET', 'POST'])
@@ -68,14 +75,15 @@ def newSports():
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
-        newSports = Sports(name=request.form['name'], user_id=login_session['user_id'])
+        newSports = Sports(name=request.form['name'],
+                           user_id=login_session['user_id'])
         session.add(newSports)
         flash('New Sports %s Successfully Created' % newSports.name)
         session.commit()
         return redirect(url_for('showSports'))
     else:
         return render_template('newSports.html')
-    # return "This page will be for making a new sports"
+        # return "This page will be for making a new sports"
 
 
 # Edit a sports
@@ -87,7 +95,7 @@ def editSports(sports_id):
     if 'username' not in login_session:
         return redirect('/login')
         if  editedSports.user_id != login_session['user_id']:
-            return "<script>function myFunction() {alert('You are not authorized to edit this restaurant. Please create your own restaurant in order to edit.');}</script><body onload='myFunction()'>"
+            return "<script>function myFunction() {alert('You are not authorized to edit this sports. Please create your own sports in order to edit.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         if request.form['name']:
             editedSports.name = request.form['name']
@@ -106,7 +114,7 @@ def deleteSports(sports_id):
     if 'username' not in login_session:
         return redirect('/login')
     if sportsToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to delete this restaurant. Please create your own restaurant in order to delete.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You are not authorized to delete this Sports. Please create your own sports in order to delete.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         session.delete(sportsToDelete)
         session.commit()
@@ -125,11 +133,11 @@ def deleteSports(sports_id):
 @app.route(
     '/sports/<int:sports_id>/player/new/', methods=['GET', 'POST'])
 def newPlayer(sports_id):
+    sports = session.query(Sports).filter_by(id=sports_id).one()
     if 'username' not in login_session:
         return redirect('/login')
         if 'username' not in login_session:
             return redirect('/login')
-    sports = session.query(Sports).filter_by(id=sports_id).one()
     if login_session['user_id'] != sports.user_id:
         return "<script>function myFunction() {alert('You are not authorized to add player to this sports. Please create your own Sports in order to add Players.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
@@ -145,6 +153,7 @@ def newPlayer(sports_id):
     return render_template('newPlayer.html', sports_id=sports_id)
     # return 'This page is for adding a new playerfor sports 
     # %sports_id
+
 
 
 # Edit the sports player
@@ -168,9 +177,11 @@ def editPlayer(sports_id, player_id):
     else:
 
         return render_template(
-            'editPlayer.html', sports_id=sports_id, player_id=player_id, player=editedPlayer)
+            'editPlayer.html', sports_id=sports_id, player_id=player_id,
+            player=editedPlayer)
 
-    # return 'This page is for editing the sports player %s' % player_id
+        # return 'This page is for editing the sports player %s' % player_id
+
 
 # Delete the sports player
 
@@ -185,11 +196,13 @@ def deletePlayer(sports_id, player_id):
         return redirect(url_for('showSportsDetail', sports_id=sports_id))
     else:
         return render_template('deletePlayer.html', player=deletedPlayer)
-    # return "This page is for deleting sports player %s' % player_id
+        # return "This page is for deleting sports player %s' % player_id
 
 
-#Auth views
- # https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
+        # Auth views
+        # https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
+
+
 # Create anti-forgery state token
 @app.route('/login')
 def showLogin():
@@ -245,15 +258,16 @@ def gconnect():
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
-        print "Token's client ID does not match app's."
+        print("Token's client ID does not match app's.")
         response.headers['Content-Type'] = 'application/json'
         return response
 
     stored_access_token = login_session.get('access_token')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_access_token is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(
+            json.dumps('Current user is already connected.'),
+            200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -271,13 +285,13 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
-    # ADD PROVIDER TO LOGIN SESSION
-    login_session['provider'] = 'google'
 
-    # see if user exists, if it doesn't make a new one
-    user_id = getUserID(data["email"])
+    user_id = getUserID(data['email'])
+    print(user_id)
     if not user_id:
-        user_id = createUser(login_session)
+        add_user = createUser(login_session)
+        login_session['user_id'] = add_user
+
     login_session['user_id'] = user_id
 
     output = ''
@@ -288,15 +302,16 @@ def gconnect():
     output += login_session['picture']
     output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
-    print "done!"
+    print("done!")
     return output
+
 
 # User Helper Functions
 
 
 def createUser(login_session):
     newUser = User(name=login_session['username'], email=login_session[
-                   'email'], picture=login_session['picture'])
+        'email'], picture=login_session['picture'])
     session.add(newUser)
     session.commit()
     user = session.query(User).filter_by(email=login_session['email']).one()
@@ -321,16 +336,22 @@ def getUserID(email):
 
 @app.route('/gdisconnect')
 def gdisconnect():
-    # Only disconnect a connected user.
     access_token = login_session.get('access_token')
     if access_token is None:
-        response = make_response(
-            json.dumps('Current user not connected.'), 401)
+        print('Access Token is None')
+        response = make_response(json.dumps('Current user not connected.'),
+                                 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
+    print('In gdisconnect access token is %s', access_token)
+    print('User name is: ')
+    print(login_session['username'])
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % \
+          login_session['access_token']
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
+    print('result is ')
+    print(result)
     if result['status'] == '200':
         del login_session['access_token']
         del login_session['gplus_id']
@@ -341,7 +362,8 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(
+            json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
