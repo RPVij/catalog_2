@@ -365,7 +365,7 @@ def getUserID(email):
 # DISCONNECT - Revoke a current user's token and reset their login_session
  # he below code snippet function is from
  # https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
-
+@app.route('/logout')
 @app.route('/gdisconnect')
 def gdisconnect():
     access_token = login_session.get('access_token')
