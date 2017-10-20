@@ -2,7 +2,8 @@ from flask import Flask, flash, render_template, request, redirect, jsonify, \
     url_for
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import random, string
+import random
+import string
 
 from urllib3.connectionpool import xrange
 
@@ -37,7 +38,8 @@ def showSports():
     print(login_session)
     sports = session.query(Sports).all()
     # return "This page will show all my sports"
-    return render_template('sports.html', sports=sports, login_session=login_session)
+    return render_template('sports.html', sports=sports,
+                           login_session=login_session)
 
 
 # Show a sports detail with players
@@ -82,7 +84,7 @@ def newSports():
         session.commit()
         return redirect(url_for('showSports'))
     else:
-        return render_template('newSports.html',login_session=login_session)
+        return render_template('newSports.html', login_session=login_session)
         # return "This page will be for making a new sports"
 
 
@@ -94,19 +96,25 @@ def editSports(sports_id):
         Sports).filter_by(id=sports_id).one()
     if 'username' not in login_session:
         return redirect('/login')
-        if  editedSports.user_id != login_session['user_id']:
-            return "<script>function myFunction() {alert('You are not authorized to edit this sports. Please create your own sports in order to edit.');}</script><body onload='myFunction()'>"
+        if editedSports.user_id != login_session['user_id']:
+            return "<script>function myFunction() {alert('You \
+            are not authorized to edit this sports.\
+             Please create your own sports in order \
+             to edit.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         if request.form['name']:
             editedSports.name = request.form['name']
             return redirect(url_for('showSports'))
     else:
         return render_template(
-            'editSports.html', sports=editedSports,login_session=login_session)
+            'editSports.html', sports=editedSports,
+            login_session=login_session)
 
     # return 'This page will be for editing sports %s' % sports_id
 
 # Delete a sports
+
+
 @app.route('/sports/<int:sports_id>/delete/', methods=['GET', 'POST'])
 def deleteSports(sports_id):
     sportsToDelete = session.query(
@@ -114,7 +122,10 @@ def deleteSports(sports_id):
     if 'username' not in login_session:
         return redirect('/login')
     if sportsToDelete.user_id != login_session['user_id']:
-        return "<script>function myFunction() {alert('You are not authorized to delete this Sports. Please create your own sports in order to delete.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You\
+         are not authorized to delete this Sports.\
+          Please create your own sports in order\
+           to delete.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         session.delete(sportsToDelete)
         session.commit()
@@ -122,10 +133,9 @@ def deleteSports(sports_id):
             url_for('showSports', sports_id=sports_id))
     else:
         return render_template(
-            'deleteSports.html', sports=sportsToDelete,login_session=login_session)
+            'deleteSports.html', sports=sportsToDelete,
+            login_session=login_session)
     # return 'This page will be for deleting sports %s' % sports_id
-
-
 
 
 # adding a new Sports Player
@@ -137,10 +147,16 @@ def newPlayer(sports_id):
     if 'username' not in login_session:
         return redirect('/login')
     if login_session['user_id'] != sports.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to add player to this sports. Please create your own Sports in order to add Players.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You\
+         are not authorized to add player to this sports.\
+          Please create your own Sports in order to add \
+          Players.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
-        newP = SportsPlayer(name=request.form['name'], description=request.form[
-                           'description'], rank=request.form['rank'], country=request.form['country'], sports_id=sports_id, user_id=sports.user_id)
+        newP = SportsPlayer(name=request.form['name'],
+                            description=request.form[
+            'description'], rank=request.form['rank'],
+            country=request.form['country'], sports_id=sports_id,
+            user_id=sports.user_id)
         session.add(newP)
         session.commit()
         flash('New Sports Player: %s . Successfully Created' % (newP.name))
@@ -148,10 +164,10 @@ def newPlayer(sports_id):
     else:
         return render_template('newplayer.html', sports_id=sports_id)
 
-    return render_template('newPlayer.html', sports_id=sports_id,login_session=login_session)
-    # return 'This page is for adding a new playerfor sports 
+    return render_template('newPlayer.html', sports_id=sports_id,
+                           login_session=login_session)
+    # return 'This page is for adding a new playerfor sports
     # %sports_id
-
 
 
 # Edit the sports player
@@ -163,7 +179,10 @@ def editPlayer(sports_id, player_id):
     if 'username' not in login_session:
         return redirect('/login')
     if login_session['user_id'] != editedPlayer.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to edit player to this sports. Please create your own Sports in order to edit Players.');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You \
+        are not authorized to edit player to this sports.\
+         Please create your own Sports in order to edit \
+         Players.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         if request.form['name']:
             editedPlayer.name = request.form['name']
@@ -175,12 +194,14 @@ def editPlayer(sports_id, player_id):
             editedPlayer.country = request.form['country']
         session.add(editedPlayer)
         session.commit()
-        return redirect(url_for('showSportsDetail', sports_id=sports_id,login_session=login_session))
+        return redirect(url_for('showSportsDetail',
+                                sports_id=sports_id,
+                                 login_session=login_session))
     else:
 
         return render_template(
             'editPlayer.html', sports_id=sports_id, player_id=player_id,
-            player=editedPlayer,login_session=login_session)
+            player=editedPlayer, login_session=login_session)
 
         # return 'This page is for editing the sports player %s' % player_id
 
@@ -195,19 +216,22 @@ def deletePlayer(sports_id, player_id):
     if 'username' not in login_session:
         return redirect('/login')
     if login_session['user_id'] != deletedPlayer.user_id:
-        return "<script>function myFunction() {alert('You are not authorized to delete player to this sports. ');}</script><body onload='myFunction()'>"
+        return "<script>function myFunction() {alert('You \
+        are not authorized to delete player to this \
+        sports. ');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         session.delete(deletedPlayer)
         session.commit()
-        return redirect(url_for('showSportsDetail', sports_id=sports_id),login_session=login_session)
+        return redirect(url_for('showSportsDetail',
+                                sports_id=sports_id), login_session=login_session)
     else:
-        return render_template('deletePlayer.html', player=deletedPlayer,login_session=login_session)
+        return render_template('deletePlayer.html',
+                               player=deletedPlayer, login_session=login_session)
         # return "This page is for deleting sports player %s' % player_id
-
 
         # Auth views
 
-        #the below code snippet function is from
+        # the below code snippet function is from
         # https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
 
 
@@ -340,7 +364,8 @@ def getUserID(email):
 
 
 # DISCONNECT - Revoke a current user's token and reset their login_session
- # he below code snippet function is from https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
+ # he below code snippet function is from
+ # https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
 
 @app.route('/gdisconnect')
 def gdisconnect():
