@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-  <!--------------------------------------------------------------------->
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-12">
@@ -20,7 +19,6 @@
       </div>
     </div>
   </div>
-  <!--------------------------------------------------------------------->
   <div class="container">
     <div class="row">
       <div class="col-md-12">
@@ -36,13 +34,16 @@
           <div class="card">
             <a href="{{ url_for('showSportsDetail', sports_id = sport.id) }}">
               <h3>{{ sport.name }}</h3></a>
-
+              {% if 'username' in login_session %}
+                      {% if login_session['user_id'] == sport.user_id %}
             <span><a href="{{ url_for('editSports',sports_id = sport.id) }}">Edit
             Sports</a></span>
 
             <span class="right"><a
                 href="{{ url_for('deleteSports',sports_id = sport.id) }}">Delete
             Sports</a></span>
+              {% endif %}
+                    {% endif %}
           </div>
 
         {% endfor %}

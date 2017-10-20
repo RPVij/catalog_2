@@ -1,5 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="user-content">
+          {% if login_session['username'] != null %}
+            <span class="image"><img src="{{ login_session['picture'] }}"
+                                     class="img-circle"></span><span
+              class="name">{{ login_session['username'] }}</span>
+            <a href="{{ url_for('gdisconnect') }}"><span
+                class="session">logout</span></a>
+          {% else %}
+            <a href="{{ url_for('showLogin') }}"><span
+                class="session">login</span></a>
+          {% endif %}
+          <hr>
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="container">
     <div class="row">
       <div class="col-md-3"></div>
