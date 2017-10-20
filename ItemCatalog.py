@@ -146,11 +146,6 @@ def newPlayer(sports_id):
     sports = session.query(Sports).filter_by(id=sports_id).one()
     if 'username' not in login_session:
         return redirect('/login')
-    if login_session['user_id'] != sports.user_id:
-        return "<script>function myFunction() {alert('You\
-         are not authorized to add player to this sports.\
-          Please create your own Sports in order to add \
-          Players.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         newP = SportsPlayer(name=request.form['name'],
                             description=request.form[
@@ -196,7 +191,7 @@ def editPlayer(sports_id, player_id):
         session.commit()
         return redirect(url_for('showSportsDetail',
                                 sports_id=sports_id,
-                                 login_session=login_session))
+                                login_session=login_session))
     else:
 
         return render_template(
@@ -223,10 +218,12 @@ def deletePlayer(sports_id, player_id):
         session.delete(deletedPlayer)
         session.commit()
         return redirect(url_for('showSportsDetail',
-                                sports_id=sports_id), login_session=login_session)
+                                sports_id=sports_id),
+                        login_session=login_session)
     else:
         return render_template('deletePlayer.html',
-                               player=deletedPlayer, login_session=login_session)
+                               player=deletedPlayer,
+                               login_session=login_session)
         # return "This page is for deleting sports player %s' % player_id
 
         # Auth views
@@ -332,7 +329,9 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px;\
+     height: 300px;border-radius: 150px;\
+     -webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("you are now logged in as %s" % login_session['username'])
     print("done!")
     return output
@@ -393,7 +392,7 @@ def gdisconnect():
         del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
         response.headers['Content-Type'] = 'application/json'
-        return response
+        return redirect(url_for('showSports'))
     else:
         response = make_response(
             json.dumps('Failed to revoke token for given user.', 400))
