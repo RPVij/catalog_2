@@ -82,10 +82,12 @@ def newSports():
 
 @app.route('/sports/<int:sports_id>/edit/', methods=['GET', 'POST'])
 def editSports(sports_id):
-    if 'username' not in login_session:
-        return redirect('/login')
     editedSports = session.query(
         Sports).filter_by(id=sports_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+        if  editedSports.user_id != login_session['user_id']:
+            return "<script>function myFunction() {alert('You are not authorized to edit this restaurant. Please create your own restaurant in order to edit.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         if request.form['name']:
             editedSports.name = request.form['name']
@@ -99,10 +101,12 @@ def editSports(sports_id):
 # Delete a sports
 @app.route('/sports/<int:sports_id>/delete/', methods=['GET', 'POST'])
 def deleteSports(sports_id):
-    if 'username' not in login_session:
-        return redirect('/login')
     sportsToDelete = session.query(
         Sports).filter_by(id=sports_id).one()
+    if 'username' not in login_session:
+        return redirect('/login')
+    if sportsToDelete.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You are not authorized to delete this restaurant. Please create your own restaurant in order to delete.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         session.delete(sportsToDelete)
         session.commit()
@@ -123,17 +127,22 @@ def deleteSports(sports_id):
 def newPlayer(sports_id):
     if 'username' not in login_session:
         return redirect('/login')
+        if 'username' not in login_session:
+            return redirect('/login')
+    sports = session.query(Sports).filter_by(id=sports_id).one()
+    if login_session['user_id'] != sports.user_id:
+        return "<script>function myFunction() {alert('You are not authorized to add player to this sports. Please create your own Sports in order to add Players.');}</script><body onload='myFunction()'>"
     if request.method == 'POST':
         newP = SportsPlayer(name=request.form['name'], description=request.form[
                            'description'], rank=request.form['rank'], country=request.form['country'], sports_id=sports_id, user_id=sports.user_id)
         session.add(newP)
         session.commit()
-
+        flash('New Sports Player: %s . Successfully Created' % (newP.name))
         return redirect(url_for('showSports', sports_id=sports_id))
     else:
         return render_template('newplayer.html', sports_id=sports_id)
 
-    return render_template('newPlayer.html', sports=sports)
+    return render_template('newPlayer.html', sports_id=sports_id)
     # return 'This page is for adding a new playerfor sports 
     # %sports_id
 
