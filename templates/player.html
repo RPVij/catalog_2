@@ -1,67 +1,69 @@
-<html>
-	
-<head>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	</head>
-	<body>
-		<div class = 'heading'>
-		<h1>{{ sports.name }}</h1>
-	</div>
-		
-		{% with messages = get_flashed_messages() %}
-      {% if messages %}
-          
-        <ul>
-        {% for message in messages %}
-            <li> <strong> {{ message }} </strong> </li>
-        {% endfor %}
-        </ul>
+{% extends 'base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class='heading'>
+          <h1>{{ sports.name }}</h1>
+          <hr>
+        </div>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+
+            <ul>
+              {% for message in messages %}
+                <li><strong> {{ message }} </strong></li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        {% if players !=[] %}
+
+          <a href="{{ url_for('newPlayer', sports_id = sports.id ) }}">Add a
+            new
+            Player</a>
+          </br></br>
+
+          <h2 class="text-center">Players</h2>
+          <hr>
+          <br>
+          <br>
+
+          {% for i in players %}
+            <div class="row">
+              <div class="col s12 m6">
+                <div class="card">
+                  <div class="card-title">
+                    <h2 class="text-center">{{ i.name }}</h2>
+                    <hr>
+                  </div>
+                  <p>{{ i.rank }}</p>
+
+                  <p>{{ i.country }}</p>
+
+                  <p>{{ i.description }}</p>
+                  <div class="card-action">
+                    {% if 'username' in login_session %}
+                      {% if login_session['user_id'] == i.user_id %}
+                    <a href="{{ url_for('editPlayer', sports_id = sports.id, player_id=i.id) }}">Edit</a>
+                    <span class="right"> <a
+                        href="{{ url_for('deletePlayer', sports_id = sports.id, player_id=i.id) }}">Delete</a>
+                    </span>
+                        {% endif %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p> You currently have no menu players. </p>
+          <a href="{{ url_for('newPlayer', sports_id = sports.id ) }}">Create
+            New
+            Item</a>
         {% endif %}
-    {% endwith %}
-
-    {% if players !=[] %}
-
-		<a href = "{{url_for('newPlayer', sports_id = sports.id )}}">Add a new Player</a>
-	</br></br>	
-
-	<h2>Players</h2>
-
-		{% for i in players %}
-		 <div class="row">
-		 	<div class="col s12 m6">
-		 		<div class="card">
-		 			<div class="card-title">
-				<h2>{{i.name}}</h2>
-			</div>
-			<p>{{i.rank}}</p>
-
-			<p>{{i.country}}</p>
-
-			<p>{{i.description}}</p>
-			<div class="card-action">
-				<a href="{{url_for('editPlayer', sports_id = sports.id, player_id=i.id) }}">Edit</a>
-				<a href="{{url_for('deletePlayer', sports_id = sports.id, player_id=i.id) }}">Delete</a>
-			</div>
-		</div>
-	</div>
-	</div>
-	
-
-		
-
-		
-</br>
-</br>
-
-		{% endfor %}
-		
-		
-
-		{% else %}
-		<p> You currently have no menu players. </p>
-		<a href = "{{url_for('newPlayer', sports_id = sports.id )}}">Create New Item</a>
-			{% endif %}
-</div>
-	</body>
-
-</html>
+      </div>
+    </div>
+  </div>
+{% endblock %}

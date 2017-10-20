@@ -1,28 +1,29 @@
-<html>
+{% extends 'base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6 text-center">
+
+        <h1> Edit Sports </h1>
 
 
-<head>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	</head>
-
-<body>
-
-<h1> Edit Sports </h1>
+        <form action="{{ url_for('editSports',sports_id = sports.id) }}"
+              method='post'>
 
 
-<form action="{{ url_for('editSports',sports_id = sports.id)}}" method = 'post'>
+          <p>Name:</p>
+          <input type='text' size='30' name='name'
+                 placeholder='{{ sports.name }}'>
 
 
-	<p>Name:</p>
-		<input type ='text' size='30' name='name' placeholder = '{{sports.name }}'>
+          <input type='submit' value='Edit'>
 
 
-<input type='submit' value='Edit'>
+          <a href='{{ url_for('showSports') }}'> Cancel </a>
 
-
-<a href = '{{url_for('showSports')}}'> Cancel </a>
-
-</form>
-</body>
-
-</html>
+        </form>
+        <div class="col-md-3"></div>
+      </div>
+    </div>
+{% endblock %}

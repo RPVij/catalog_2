@@ -1,22 +1,21 @@
-<html>
+{% extends 'base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6 text-center">
+        <h3> Are you sure you want to delete {{ sports.name }}? </h3>
 
-<head>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	</head>
+        <form action="#" method='post'>
 
-<body>
-<h1> Are you sure you want to delete {{sports.name}}? </h1>
-
-<form action="#" method = 'post'>
-
-<input type='submit', value = 'Delete'>
-
+          <input type='submit' , value='Delete'>
 
 
+        </form>
 
-</form>
-
-<a href = '#'> Cancel </a>
-</body>
-
-</html>
+        <a href='#'> Cancel </a>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+  </div>
+{% endblock %}

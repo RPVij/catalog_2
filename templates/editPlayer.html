@@ -1,34 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6 text-center">
+        <h1> Edit Player</h1>
 
-<html>
-
-<head>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	</head>
-
-<body><h1> Edit Player</h1>
-
-<form action="#" method = 'post'>
-
-
-	<p>Name:</p>
-		<input type ='text' size='30' name='name' placeholder = '{{player.name }}'>
-	<p>Description:</p>
-		<input type ='text' size='30' name='description' placeholder = '{{player.description}}'>
-	<p>Rank:</p>
-		<input type ='text' size='30' name='rank' placeholder = '{{player.rank}}'>
-	<p>Country<p>
-		<input type ='text' size='30' name='country' placeholder = '{{player.country}}'>
-
-	
+        <form action="#" method='post'>
 
 
+          <p>Name:</p>
+          <input type='text' size='30' name='name'
+                 placeholder='{{ player.name }}'>
+          <p>Description:</p>
+          <input type='text' size='30' name='description'
+                 placeholder='{{ player.description }}'>
+          <p>Rank:</p>
+          <input type='text' size='30' name='rank'
+                 placeholder='{{ player.rank }}'>
+          <p>Country
+          <p>
+            <input type='text' size='30' name='country'
+                   placeholder='{{ player.country }}'>
+            <br><br>
+            <input type='submit' value='Edit'>
+            <a href='#'> Cancel </a>
 
-<input type='submit' value='Edit'>
 
-
-<a href = '#'> Cancel </a>
-
-
-</form>
-</body>
-</html>
+        </form>
+      </div>
+      <div class="col-md-3"></div>
+    </div>
+  </div>
+{% endblock %}

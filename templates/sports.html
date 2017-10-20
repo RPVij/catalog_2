@@ -1,30 +1,31 @@
-<html>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <h1>Sports</h1>
+      <hr>
+    </div>
+    <div class="col-md-12">
+      <a href="{{ url_for('newSports') }}"><h4> Add a New Sports </h4></a>
 
-<head>
-<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
-	</head>
+      {% for sport in sports %}
 
 
-<body>
-<div class = 'heading'>
-<h1>Sports</h1>
+        <div class="card">
+          <a href="{{ url_for('showSportsDetail', sports_id = sport.id) }}">
+            <h3>{{ sport.name }}</h3></a>
+
+          <span><a href="{{ url_for('editSports',sports_id = sport.id) }}">Edit
+            Sports</a></span>
+
+          <span class="right"><a
+              href="{{ url_for('deleteSports',sports_id = sport.id) }}">Delete
+            Sports</a></span>
+        </div>
+
+      {% endfor %}
+    </div>
+  </div>
 </div>
-
-<a href="{{url_for('newSports')}}" > <h3> Add a New Sports </h3> </a>
-
-{% for sport in sports %}
-
-
-<div class="card" style="margin: 3px;">
-<a href = "{{url_for('showSportsDetail', sports_id = sport.id)}}"> <h2>{{sport.name}}</h2></a>
-
-<p><a href = "{{url_for('editSports',sports_id = sport.id)}}">Edit Sports</a></p>
-
-<p> <a href = "{{url_for('deleteSports',sports_id = sport.id)}}">Delete Sports</a> </p>
-</div>
-
-{% endfor %}
-
-</body>
-
-</html>
+{% endblock %}
