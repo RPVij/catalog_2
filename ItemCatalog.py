@@ -96,8 +96,8 @@ def editSports(sports_id):
         Sports).filter_by(id=sports_id).one()
     if 'username' not in login_session:
         return redirect('/login')
-        if editedSports.user_id != login_session['user_id']:
-            return "<script>function myFunction() {alert('You \
+    if editedSports.user_id != login_session['user_id']:
+        return "<script>function myFunction() {alert('You \
             are not authorized to edit this sports.\
              Please create your own sports in order \
              to edit.');}</script><body onload='myFunction()'>"
@@ -110,7 +110,8 @@ def editSports(sports_id):
             'editSports.html', sports=editedSports,
             login_session=login_session)
 
-    # return 'This page will be for editing sports %s' % sports_id
+        # return 'This page will be for editing sports %s' % sports_id
+
 
 # Delete a sports
 
@@ -135,7 +136,7 @@ def deleteSports(sports_id):
         return render_template(
             'deleteSports.html', sports=sportsToDelete,
             login_session=login_session)
-    # return 'This page will be for deleting sports %s' % sports_id
+        # return 'This page will be for deleting sports %s' % sports_id
 
 
 # adding a new Sports Player
@@ -149,20 +150,19 @@ def newPlayer(sports_id):
     if request.method == 'POST':
         newP = SportsPlayer(name=request.form['name'],
                             description=request.form[
-            'description'], rank=request.form['rank'],
-            country=request.form['country'], sports_id=sports_id,
-            user_id=sports.user_id)
+                                'description'], rank=request.form['rank'],
+                            country=request.form['country'], sports_id=sports_id,
+                            user_id=sports.user_id)
         session.add(newP)
         session.commit()
         flash('New Sports Player: %s . Successfully Created' % (newP.name))
         return redirect(url_for('showSports', sports_id=sports_id))
     else:
-        return render_template('newplayer.html', sports_id=sports_id)
+        return render_template('newplayer.html', sports_id=sports_id,
+                               login_session=login_session)
 
-    return render_template('newPlayer.html', sports_id=sports_id,
-                           login_session=login_session)
-    # return 'This page is for adding a new playerfor sports
-    # %sports_id
+        # return 'This page is for adding a new playerfor sports
+        # %sports_id
 
 
 # Edit the sports player
@@ -217,13 +217,12 @@ def deletePlayer(sports_id, player_id):
     if request.method == 'POST':
         session.delete(deletedPlayer)
         session.commit()
-        return redirect(url_for('showSportsDetail',
-                                sports_id=sports_id),
-                        login_session=login_session)
+        return redirect(url_for('showSports',
+                                sports_id=sports_id,
+                           login_session=login_session))
     else:
         return render_template('deletePlayer.html',
-                               player=deletedPlayer,
-                               login_session=login_session)
+                               player=deletedPlayer)
         # return "This page is for deleting sports player %s' % player_id
 
         # Auth views
@@ -362,9 +361,11 @@ def getUserID(email):
         return None
 
 
-# DISCONNECT - Revoke a current user's token and reset their login_session
- # he below code snippet function is from
- # https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
+        # DISCONNECT - Revoke a current user's token and reset their login_session
+        # he below code snippet function is from
+        # https://github.com/udacity/ud330/blob/master/Lesson2/step5/project.py
+
+
 @app.route('/logout')
 @app.route('/gdisconnect')
 def gdisconnect():

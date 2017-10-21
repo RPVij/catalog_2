@@ -24,6 +24,7 @@ class Sports(Base):
     name = Column(String(300), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
+    sports_player = relationship('SportsPlayer', cascade='all, delete-orphan')
 
     @property
     def serialize(self):
